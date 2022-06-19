@@ -10,6 +10,10 @@ export interface User {
 
 let usersDb: User[] = [];
 
+process.on('message', (message: string) => {
+  usersDb = JSON.parse(message);
+});
+
 export const userRouter = {
   get: (req: IncomingMessage, res: ServerResponse) => {
     try {
@@ -50,6 +54,7 @@ export const userRouter = {
           const userId = uuidv4();
           const userObj: User = { ...userData, id: userId };
           usersDb.push(userObj);
+          process?.send?.(JSON.stringify(usersDb));
           sendResponse(userObj, res, 201);
         } else {
           sendResponse('Body does not contain required fields', res, 400);
@@ -90,6 +95,7 @@ export const userRouter = {
                   }
                   return user;
                 });
+                process?.send?.(JSON.stringify(usersDb));
                 sendResponse(userObj, res, 200);
               } else {
                 sendResponse('Body does not contain required fields', res, 400);
@@ -120,6 +126,7 @@ export const userRouter = {
         if (validate(idFromReq)) {
           if (userFromDb) {
             usersDb = usersDb.filter((user) => user.id !== idFromReq);
+            process?.send?.(JSON.stringify(usersDb));
             sendResponse(
               `user with id ${idFromReq} has been deleted`,
               res,
