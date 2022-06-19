@@ -48,16 +48,20 @@ export const userRouter = {
         data += chunk;
       });
       req.on('end', () => {
-        const userData = JSON.parse(data);
-        const isValidProp = validateUserProp(userData as unknown as User);
-        if (isValidProp) {
-          const userId = uuidv4();
-          const userObj: User = { ...userData, id: userId };
-          usersDb.push(userObj);
-          process?.send?.(JSON.stringify(usersDb));
-          sendResponse(userObj, res, 201);
-        } else {
-          sendResponse('Body does not contain required fields', res, 400);
+        try {
+          const userData = JSON.parse(data);
+          const isValidProp = validateUserProp(userData as unknown as User);
+          if (isValidProp) {
+            const userId = uuidv4();
+            const userObj: User = { ...userData, id: userId };
+            usersDb.push(userObj);
+            process?.send?.(JSON.stringify(usersDb));
+            sendResponse(userObj, res, 201);
+          } else {
+            sendResponse('Body does not contain required fields', res, 400);
+          }
+        } catch {
+          sendResponse('Internal Server Error', res, 500);
         }
       });
 
