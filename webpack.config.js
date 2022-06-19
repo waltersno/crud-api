@@ -4,12 +4,11 @@ import { dirname, resolve } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const {
-  NODE_ENV = 'production',
-} = process.env;
+const { NODE_ENV = 'production' } = process.env;
 
 export default {
-  entry: './src/index.ts',
+  entry:
+    NODE_ENV === 'production' ? './src/server.ts' : './src/multi-server.ts',
   mode: 'none',
   target: 'node',
   output: {
