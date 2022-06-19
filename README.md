@@ -10,7 +10,7 @@ npm run start:dev
 
 PORT=5000 or it can be changed in .env
 
-## Npm start multiple instances of app
+## Npm start multiple instances of your application using the Node.js Cluster
 
 npm run start:multi
 
